@@ -3,6 +3,7 @@
 # This file is part of gunicorn released under the MIT license.
 # See the NOTICE for more information.
 import errno
+import logging
 import os
 import random
 import select
@@ -16,6 +17,8 @@ from gunicorn.pidfile import Pidfile
 from gunicorn import sock, systemd, util
 
 from gunicorn import __version__, SERVER_SOFTWARE
+
+LOGGER = logging.getLogger(__name__)
 
 
 class Arbiter(object):
@@ -635,6 +638,7 @@ class Arbiter(object):
         try:
             os.kill(pid, sig)
         except OSError as e:
+            LOGGER.exception("OSError:")
             if e.errno == errno.ESRCH:
                 try:
                     worker = self.WORKERS.pop(pid)
